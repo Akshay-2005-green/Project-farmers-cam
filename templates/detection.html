@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}
+Crop Disease Detection
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h2 class="text-center text-success mb-4">
+            <i class="fa-solid fa-leaf"></i>
+            Crop Disease Detection
+        </h2>
+
+        <form action="{{ url_for('predict') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <div class="row">
+
+                <!-- Select Image -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="btn btn-success w-100 p-3">
+
+                        <i class="fa-solid fa-image fa-2x"></i>
+
+                        <br><br>
+
+                        Select Image
+
+                        <input
+                            type="file"
+                            id="galleryInput"
+                            name="image"
+                            accept="image/*"
+                            hidden
+                            onchange="previewImage(event)">
+
+                    </label>
+
+                </div>
+
+                <!-- Camera -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="btn btn-primary w-100 p-3">
+
+                        <i class="fa-solid fa-camera fa-2x"></i>
+
+                        <br><br>
+
+                        Take Photo
+
+                        <input
+                            type="file"
+                            id="cameraInput"
+                            name="image"
+                            accept="image/*"
+                            capture="environment"
+                            hidden
+                            onchange="previewImage(event)">
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- Preview -->
+
+            <div class="text-center">
+
+                <img
+                    id="preview"
+                    src="{{ url_for('static', filename='images/upload.png') }}"
+                    alt="Preview"
+                    class="img-thumbnail"
+                    style="max-width:350px; max-height:350px;">
+
+            </div>
+
+            <br>
+
+            <div class="text-center">
+
+                <button
+                    type="submit"
+                    class="btn btn-success btn-lg">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    Detect Disease
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function previewImage(event)
+{
+    const preview = document.getElementById("preview");
+
+    const file = event.target.files[0];
+
+    if(file)
+    {
+        preview.src = URL.createObjectURL(file);
+    }
+}
+
+</script>
+
+{% endblock %}
