@@ -1,5 +1,5 @@
-from flask import Flask ,render_template ,url_for ,request ,redirect ,session
-from models import db, User
+from flask import Flask ,render_template ,url_for ,request ,redirect ,session ,flash
+from models import db, User ,Prediction
 from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
@@ -72,16 +72,19 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user is None:
-            return "Email not registered"
+            flash("Email not registered.", "danger")
+            return redirect(url_for("login"))
 
         # Since you're currently storing plain text passwords
         if user.password == password:
             session["user_id"] = user.id
             session["user_name"] = user.name
 
+            flash(f"Welcome {user.name}!", "success")
             return redirect(url_for("dashboard"))
 
-        return "Incorrect Password"
+        flash("Incorrect Password.", "danger")
+        return redirect(url_for("login"))
 
     return render_template("login.html")
 
@@ -99,13 +102,15 @@ def register():
         confirm_password = request.form["confirm_password"]
 
         if password != confirm_password:
-            return "Passwords do not match"
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for("register"))
 
         # Check existing email
         existing_user = User.query.filter_by(email=email).first()
 
         if existing_user:
-            return "Email already registered"
+            flash("Email already exists.", "warning")
+            return redirect(url_for("register"))
 
         user = User(
             name=name,
@@ -117,6 +122,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
+        flash("Registration Successful! Please Login.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html")
@@ -124,6 +130,7 @@ def register():
 @app.route("/logout")
 def logout():
     session.clear()
+    flash("Logged out successfully.", "info")
     return redirect(url_for("login"))
 
 with app.app_context():
