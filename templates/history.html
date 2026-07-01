@@ -34,111 +34,111 @@ Detection History
 
                 </thead>
 
-                <tbody>
+               <tbody>
 
-                    <tr>
+{% if predictions %}
 
-                        <td>1</td>
+    {% for prediction in predictions %}
 
-                        <td>
-                            <img src="{{ url_for('static', filename='images/tomato.jpg') }}"
-                                 width="80"
-                                 class="rounded">
-                        </td>
+    <tr>
 
-                        <td>Tomato</td>
+        <td>{{ prediction.id }}</td>
 
-                        <td class="text-danger">
-                            Late Blight
-                        </td>
+        <td>
 
-                        <td>98.7%</td>
+            <img src="{{ url_for('static',
+                    filename=prediction.image.replace('static/','')) }}"
+                 width="80"
+                 class="rounded shadow-sm">
 
-                        <td>29-06-2026</td>
+        </td>
 
-                        <td>
+        <td>
 
-                            <button class="btn btn-primary btn-sm">
-                                View
-                            </button>
+            {{ prediction.crop_name }}
 
-                            <button class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
+        </td>
 
-                        </td>
+        <td class="fw-bold text-danger">
 
-                    </tr>
+            {{ prediction.disease.replace("___"," - ").replace("_"," ") }}
 
-                    <tr>
+        </td>
 
-                        <td>2</td>
+        <td>
 
-                        <td>
-                            <img src="{{ url_for('static', filename='images/corn.jpg') }}"
-                                 width="80"
-                                 class="rounded">
-                        </td>
+            <span class="badge bg-success">
 
-                        <td>Corn</td>
+                {{ prediction.confidence }}%
 
-                        <td class="text-warning">
-                            Common Rust
-                        </td>
+            </span>
 
-                        <td>95.2%</td>
+        </td>
 
-                        <td>28-06-2026</td>
+        <td>
 
-                        <td>
+            {{ prediction.created_at.strftime("%d-%m-%Y") }}
 
-                            <button class="btn btn-primary btn-sm">
-                                View
-                            </button>
+        </td>
 
-                            <button class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
+        <td>
 
-                        </td>
+            <a href="{{ url_for('view_prediction', id=prediction.id) }}"
+               class="btn btn-primary btn-sm">
 
-                    </tr>
+                <i class="fa-solid fa-eye"></i>
 
-                    <tr>
+                View
 
-                        <td>3</td>
+            </a>
 
-                        <td>
-                            <img src="{{ url_for('static', filename='images/potato.jpg') }}"
-                                 width="80"
-                                 class="rounded">
-                        </td>
+            <a href="{{ url_for('delete_prediction', id=prediction.id) }}"
+               class="btn btn-danger btn-sm">
 
-                        <td>Potato</td>
+                <i class="fa-solid fa-trash"></i>
 
-                        <td class="text-danger">
-                            Early Blight
-                        </td>
+                Delete
 
-                        <td>97.8%</td>
+            </a>
 
-                        <td>27-06-2026</td>
+        </td>
 
-                        <td>
+    </tr>
 
-                            <button class="btn btn-primary btn-sm">
-                                View
-                            </button>
+    {% endfor %}
 
-                            <button class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
+{% else %}
 
-                        </td>
+<tr>
 
-                    </tr>
+    <td colspan="7" class="text-center py-5">
 
-                </tbody>
+        <i class="fa-solid fa-clock-rotate-left fa-3x text-secondary mb-3"></i>
+
+        <h4>No Detection History Found</h4>
+
+        <p class="text-muted">
+
+            Start detecting crop diseases to see your prediction history here.
+
+        </p>
+
+        <a href="{{ url_for('detect') }}"
+           class="btn btn-success">
+
+            <i class="fa-solid fa-camera"></i>
+
+            Detect Disease
+
+        </a>
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+</tbody>
 
             </table>
 

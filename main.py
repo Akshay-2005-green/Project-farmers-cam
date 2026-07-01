@@ -1,8 +1,15 @@
 from flask import Flask ,render_template ,url_for ,request ,redirect ,session ,flash
 from models import db, User ,Prediction
 from werkzeug.security import check_password_hash
+import os
+from werkzeug.utils import secure_filename
+from ai.predict_utils import predict_image
+from disease_info import DISEASE_INFO
 
 app = Flask(__name__)
+UPLOAD_FOLDER = "static/uploads"
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.secret_key = "farmerscam_secret_key"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -33,21 +40,109 @@ def detect():
 @app.route("/predict", methods=["POST"])
 def predict():
 
-    image = request.files["image"]
+    # Get uploaded image
+    image = request.files.get("image")
 
-    # Temporary prediction
-    disease = "Tomato Late Blight"
+    if image is None:
+        flash("No image uploaded.", "danger")
+        return redirect(url_for("detect"))
 
-    return f"Prediction: {disease}"
+    if image.filename == "":
+        flash("Please select an image first.", "warning")
+        return redirect(url_for("detect"))
 
+    # Safe filename
+    filename = secure_filename(image.filename)
 
-@app.route("/history")
-def history():
+    # Save image
+    image_path = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        filename
+    )
+
+    image.save(image_path)
+
+    # AI Prediction
+    disease, confidence = predict_image(image_path)
+    info = DISEASE_INFO.get(
+    disease,
+    {
+        "medicine": "Not Available",
+        "treatment": "No recommendation available.",
+        "prevention": "Consult an agricultural expert."
+    }
+)
+    crop = disease.split("___")[0]
+
+    prediction = Prediction(
+    user_id=session["user_id"],
+    image=image_path,
+    crop_name=crop,
+    disease=disease,
+    confidence=round(confidence,2))
+    db.session.add(prediction)
+    db.session.commit()
+
+    return render_template(
+    "result.html",
+    image=image_path,
+    disease=disease,
+    confidence=round(confidence, 2),
+    medicine=info["medicine"],
+    treatment=info["treatment"],
+    prevention=info["prevention"]
+)
+@app.route("/view_prediction/<int:id>")
+def view_prediction(id):
 
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    return render_template("history.html")
+    prediction = Prediction.query.get_or_404(id)
+
+    if prediction.user_id != session["user_id"]:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("history"))
+
+    return render_template(
+        "result.html",
+        image=prediction.image,
+        disease=prediction.disease,
+        confidence=prediction.confidence
+    )
+
+@app.route("/delete_prediction/<int:id>")
+def delete_prediction(id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    prediction = Prediction.query.get_or_404(id)
+
+    if prediction.user_id != session["user_id"]:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("history"))
+
+    db.session.delete(prediction)
+    db.session.commit()
+
+    flash("Prediction deleted successfully.", "success")
+
+    return redirect(url_for("history"))
+
+@app.route("/history")
+def history():
+
+    predictions = Prediction.query.filter_by(
+        user_id=session["user_id"]
+    ).order_by(
+        Prediction.created_at.desc()
+    ).all()
+
+    return render_template(
+        "history.html",
+        predictions=predictions
+    )
 
 
 @app.route("/profile")
@@ -58,7 +153,21 @@ def profile():
 
     user = User.query.get(session["user_id"])
 
-    return render_template("profile.html",user=user)
+    total_scans = Prediction.query.filter_by(
+        user_id=user.id
+    ).count()
+
+    disease_count = Prediction.query.filter(
+        Prediction.user_id == user.id,
+        Prediction.disease.notlike("%healthy%")
+    ).count()
+
+    return render_template(
+        "profile.html",
+        user=user,
+        total_scans=total_scans,
+        disease_count=disease_count
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])

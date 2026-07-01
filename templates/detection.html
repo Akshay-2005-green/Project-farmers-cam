@@ -6,104 +6,110 @@ Crop Disease Detection
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
 
-    <div class="card shadow p-4">
+    <div class="card shadow-lg border-0 rounded-4">
 
-        <h2 class="text-center text-success mb-4">
-            <i class="fa-solid fa-leaf"></i>
-            Crop Disease Detection
-        </h2>
+        <div class="card-body p-5">
 
-        <form action="{{ url_for('predict') }}"
-              method="POST"
-              enctype="multipart/form-data">
+            <h2 class="text-center text-success mb-5">
+                <i class="fa-solid fa-leaf me-2"></i>
+                Crop Disease Detection
+            </h2>
 
-            <div class="row">
+            <form action="{{ url_for('predict') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
 
-                <!-- Select Image -->
+                <!-- Hidden File Input -->
 
-                <div class="col-md-6 mb-3">
+                <input
+                    type="file"
+                    id="imageInput"
+                    name="image"
+                    accept="image/*"
+                    hidden
+                    onchange="previewImage(event)">
 
-                    <label class="btn btn-success w-100 p-3">
+                <!-- Buttons -->
 
-                        <i class="fa-solid fa-image fa-2x"></i>
+                <div class="row">
 
-                        <br><br>
+                    <div class="col-md-6 mb-3">
 
-                        Select Image
+                        <button
+                            type="button"
+                            class="btn btn-success w-100 p-4"
+                            onclick="openGallery()">
 
-                        <input
-                            type="file"
-                            id="galleryInput"
-                            name="image"
-                            accept="image/*"
-                            hidden
-                            onchange="previewImage(event)">
+                            <i class="fa-solid fa-image fa-3x"></i>
 
-                    </label>
+                            <br><br>
+
+                            <h5>Select Image</h5>
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary w-100 p-4"
+                            onclick="openCamera()">
+
+                            <i class="fa-solid fa-camera fa-3x"></i>
+
+                            <br><br>
+
+                            <h5>Take Photo</h5>
+
+                        </button>
+
+                    </div>
 
                 </div>
 
-                <!-- Camera -->
+                <hr class="my-4">
 
-                <div class="col-md-6 mb-3">
+                <!-- Preview -->
 
-                    <label class="btn btn-primary w-100 p-3">
+                <div class="text-center">
 
-                        <i class="fa-solid fa-camera fa-2x"></i>
+                    <img
+                        id="preview"
+                        src="{{ url_for('static', filename='images/upload.png') }}"
+                        class="img-thumbnail rounded shadow"
+                        style="max-width:300px; max-height:300px;">
 
-                        <br><br>
+                    <p
+                        id="fileName"
+                        class="mt-3 text-muted">
 
-                        Take Photo
+                        No image selected
 
-                        <input
-                            type="file"
-                            id="cameraInput"
-                            name="image"
-                            accept="image/*"
-                            capture="environment"
-                            hidden
-                            onchange="previewImage(event)">
-
-                    </label>
+                    </p>
 
                 </div>
 
-            </div>
+                <div class="text-center mt-4">
 
-            <hr>
+                    <button
+                        type="submit"
+                        class="btn btn-success btn-lg px-5">
 
-            <!-- Preview -->
+                        <i class="fa-solid fa-magnifying-glass me-2"></i>
 
-            <div class="text-center">
+                        Detect Disease
 
-                <img
-                    id="preview"
-                    src="{{ url_for('static', filename='images/upload.png') }}"
-                    alt="Preview"
-                    class="img-thumbnail"
-                    style="max-width:350px; max-height:350px;">
+                    </button>
 
-            </div>
+                </div>
 
-            <br>
+            </form>
 
-            <div class="text-center">
-
-                <button
-                    type="submit"
-                    class="btn btn-success btn-lg">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    Detect Disease
-
-                </button>
-
-            </div>
-
-        </form>
+        </div>
 
     </div>
 
@@ -111,15 +117,35 @@ Crop Disease Detection
 
 <script>
 
+function openGallery()
+{
+    const input = document.getElementById("imageInput");
+
+    input.removeAttribute("capture");
+
+    input.click();
+}
+
+function openCamera()
+{
+    const input = document.getElementById("imageInput");
+
+    input.setAttribute("capture","environment");
+
+    input.click();
+}
+
 function previewImage(event)
 {
-    const preview = document.getElementById("preview");
-
     const file = event.target.files[0];
 
     if(file)
     {
-        preview.src = URL.createObjectURL(file);
+        document.getElementById("preview").src =
+            URL.createObjectURL(file);
+
+        document.getElementById("fileName").innerHTML =
+            "<strong>Selected File:</strong> " + file.name;
     }
 }
 

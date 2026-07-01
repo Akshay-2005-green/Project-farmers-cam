@@ -1,51 +1,87 @@
 {% extends "base.html" %}
 
 {% block title %}
-Farmerscam Dashboard
+Dashboard
 {% endblock %}
 
 {% block content %}
-<!-- Main Container -->
- <main>
-    <div class="container mt-4">
 
-        <!-- First Row -->
+<div class="container py-5">
 
-        <div class="row">
+    <!-- Welcome Banner -->
+    <div class="card border-0 shadow-lg rounded-4 mb-5">
+        <div class="card-body text-center py-5">
 
-            <!-- Chart -->
+            <h1 class="display-5 fw-bold text-success">
+                <i class="fa-solid fa-leaf"></i>
+                Welcome to FarmersCam
+            </h1>
 
-            <div class="col-lg-8">
+            <p class="lead text-muted mt-3">
+                AI-Powered Crop Disease Detection System
+            </p>
 
-                <div class="card p-4">
+            <p class="text-secondary px-lg-5">
+                FarmersCam helps farmers identify diseases in crop leaves using
+                Artificial Intelligence. Upload a leaf image and receive fast,
+                accurate predictions within seconds.
+            </p>
 
-                    <h4 class="card-title">
-                        Crop Yield Analysis
-                    </h4>
+            <a href="{{ url_for('detect') }}" class="btn btn-success btn-lg mt-3">
+                <i class="fa-solid fa-camera"></i>
+                Detect Disease
+            </a>
 
-                    <canvas id="yieldChart"></canvas>
+        </div>
+    </div>
 
-                </div>
+    <!-- About -->
+    <div class="card shadow rounded-4 border-0 mb-5">
 
-            </div>
+        <div class="card-body p-5">
 
-            <!-- Weather -->
+            <h2 class="text-success mb-4">
+                <i class="fa-solid fa-circle-info"></i>
+                About FarmersCam
+            </h2>
 
-            <div class="col-lg-4">
+            <p class="fs-5 text-muted">
 
-                <div class="card weather-card p-4">
+                FarmersCam is an Artificial Intelligence based web application
+                developed to help farmers identify crop diseases quickly and
+                accurately. Using Deep Learning and TensorFlow, the system
+                analyzes images of crop leaves and predicts diseases in
+                Tomato, Potato, and Pepper plants.
 
-                    <h4>
-                        <i class="fa-solid fa-cloud-sun"></i>
-                        Weather
-                    </h4>
+            </p>
 
-                    <hr>
+        </div>
 
-                    <p>🌡 Temperature : <strong>29°C</strong></p>
-                    <p>💧 Humidity : <strong>65%</strong></p>
-                    <p>🌧 Rain Chance : <strong>15%</strong></p>
-                    <p>💨 Wind Speed : <strong>10 km/h</strong></p>
+    </div>
+
+    <!-- Features -->
+
+    <h2 class="text-success mb-4 text-center">
+        Features
+    </h2>
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <i class="fa-solid fa-camera fa-3x text-success mb-3"></i>
+
+                    <h4>Disease Detection</h4>
+
+                    <p class="text-muted">
+
+                        Upload crop leaf images and detect diseases instantly.
+
+                    </p>
 
                 </div>
 
@@ -53,89 +89,21 @@ Farmerscam Dashboard
 
         </div>
 
-        <!-- Second Row -->
+        <div class="col-md-3">
 
-        <div class="row mt-4">
+            <div class="card shadow border-0 rounded-4 h-100">
 
-            <!-- Crop Tips -->
+                <div class="card-body text-center">
 
-            <div class="col-lg-6">
+                    <i class="fa-solid fa-clock-rotate-left fa-3x text-primary mb-3"></i>
 
-                <div class="card p-4">
+                    <h4>History</h4>
 
-                    <h4 class="card-title">
-                        Crop Tips
-                    </h4>
+                    <p class="text-muted">
 
-                    <div class="tip-card p-3">
+                        View all your previous predictions.
 
-                        <h5>🌾 Wheat</h5>
-
-                        <p>
-                            Ensure proper soil drainage for healthy wheat production.
-                        </p>
-
-                    </div>
-
-                    <div class="tip-card p-3">
-
-                        <h5>🌽 Corn</h5>
-
-                        <p>
-                            Plant corn when soil temperature reaches 15°C.
-                        </p>
-
-                    </div>
-
-                    <div class="tip-card p-3">
-
-                        <h5>🍅 Tomato</h5>
-
-                        <p>
-                            Avoid overwatering to prevent Late Blight disease.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Detection Card -->
-
-            <div class="col-lg-6">
-
-                <div class="card p-4 detection">
-
-                    <h4 class="card-title">
-                        Recent Detection
-                    </h4>
-
-                    <img src="{{ url_for('static', filename='images/tomato.jpg') }}"
-                        alt="Tomato">
-
-                    <h3 class="mt-3">
-                        Late Blight
-                    </h3>
-
-                    <p>
-                        Crop :
-                        <strong>Tomato</strong>
                     </p>
-
-                    <p>
-                        Confidence :
-                        <strong>98.71%</strong>
-                    </p>
-
-                    <p>
-                        Recommended Medicine :
-                        <strong>Copper Hydroxide</strong>
-                    </p>
-
-                    <button class="btn btn-success">
-                        View Report
-                    </button>
 
                 </div>
 
@@ -143,41 +111,43 @@ Farmerscam Dashboard
 
         </div>
 
-        <!-- Statistics -->
+        <div class="col-md-3">
 
-        <div class="row mt-4">
+            <div class="card shadow border-0 rounded-4 h-100">
 
-            <div class="col-md-4">
+                <div class="card-body text-center">
 
-                <div class="card p-4 text-center stats-card">
+                    <i class="fa-solid fa-user fa-3x text-warning mb-3"></i>
 
-                    <h2>120</h2>
+                    <h4>Profile</h4>
 
-                    <p>Total Scans</p>
+                    <p class="text-muted">
 
-                </div>
+                        Manage your personal account information.
 
-            </div>
-
-            <div class="col-md-4">
-
-                <div class="card p-4 text-center stats-card">
-
-                    <h2>98%</h2>
-
-                    <p>Model Accuracy</p>
+                    </p>
 
                 </div>
 
             </div>
 
-            <div class="col-md-4">
+        </div>
 
-                <div class="card p-4 text-center stats-card">
+        <div class="col-md-3">
 
-                    <h2>25</h2>
+            <div class="card shadow border-0 rounded-4 h-100">
 
-                    <p>Diseases Detected</p>
+                <div class="card-body text-center">
+
+                    <i class="fa-solid fa-robot fa-3x text-danger mb-3"></i>
+
+                    <h4>AI Powered</h4>
+
+                    <p class="text-muted">
+
+                        Built using TensorFlow and MobileNetV2.
+
+                    </p>
 
                 </div>
 
@@ -186,5 +156,137 @@ Farmerscam Dashboard
         </div>
 
     </div>
- </main>
+
+    <!-- How It Works -->
+
+    <div class="card shadow rounded-4 border-0 mb-5">
+
+        <div class="card-body p-5">
+
+            <h2 class="text-success text-center mb-5">
+
+                How FarmersCam Works
+
+            </h2>
+
+            <div class="row text-center">
+
+                <div class="col-md-3">
+
+                    <i class="fa-solid fa-image fa-3x text-success mb-3"></i>
+
+                    <h5>1. Upload Image</h5>
+
+                    <p class="text-muted">
+                        Select a crop leaf image from your gallery or camera.
+                    </p>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <i class="fa-solid fa-microchip fa-3x text-primary mb-3"></i>
+
+                    <h5>2. AI Analysis</h5>
+
+                    <p class="text-muted">
+                        The deep learning model analyzes the uploaded image.
+                    </p>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <i class="fa-solid fa-leaf fa-3x text-warning mb-3"></i>
+
+                    <h5>3. Prediction</h5>
+
+                    <p class="text-muted">
+                        Detects the disease with confidence score.
+                    </p>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <i class="fa-solid fa-database fa-3x text-danger mb-3"></i>
+
+                    <h5>4. Save Result</h5>
+
+                    <p class="text-muted">
+                        Prediction is stored in your history.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Detection Tips -->
+
+    <div class="card shadow rounded-4 border-0">
+
+        <div class="card-body p-5">
+
+            <h2 class="text-success mb-4">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                Tips for Better Detection
+
+            </h2>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item">
+                            🌿 Capture images in natural daylight.
+                        </li>
+
+                        <li class="list-group-item">
+                            📷 Keep only one leaf in the frame.
+                        </li>
+
+                        <li class="list-group-item">
+                            🔍 Ensure the image is clear and focused.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item">
+                            🍃 Place the leaf on a plain background.
+                        </li>
+
+                        <li class="list-group-item">
+                            🤖 AI works best with healthy lighting conditions.
+                        </li>
+
+                        <li class="list-group-item">
+                            ✅ Supported crops: Tomato, Potato and Pepper.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}
